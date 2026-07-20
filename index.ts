@@ -46,8 +46,17 @@ function addTimeRange(element: HTMLElement) {
 function processNode(node: Node) {
     if (!(node instanceof HTMLElement)) return;
 
+    const parentMessage = node.closest<HTMLElement>('[id^="chat-messages-"]');
+    if (parentMessage) addTimeRange(parentMessage);
     if (node.id.startsWith("chat-messages-")) addTimeRange(node);
     node.querySelectorAll<HTMLElement>('[id^="chat-messages-"]').forEach(addTimeRange);
+}
+
+function refreshMessage(channelId: string, messageId: string) {
+    requestAnimationFrame(() => {
+        const element = document.getElementById(`chat-messages-${channelId}-${messageId}`);
+        if (element) addTimeRange(element);
+    });
 }
 
 export default definePlugin({
@@ -55,6 +64,13 @@ export default definePlugin({
     description: "Shows the start and end time on completed call messages",
     authors: [{ name: "t6rtar", id: 0n }],
     managedStyle,
+
+    flux: {
+        MESSAGE_UPDATE({ message }: { message: { channel_id?: string; channelId?: string; id: string; }; }) {
+            const channelId = message.channel_id ?? message.channelId;
+            if (channelId && message.id) refreshMessage(channelId, message.id);
+        }
+    },
 
     start() {
         document.querySelectorAll<HTMLElement>('[id^="chat-messages-"]').forEach(addTimeRange);
