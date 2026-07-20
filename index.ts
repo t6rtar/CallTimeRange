@@ -83,7 +83,8 @@ function refreshMessage(channelId: string, messageId: string) {
 export default definePlugin({
     name: "CallTimeRange",
     description: "Shows the start and end time on completed call messages",
-    authors: [{ name: "t6rtar", id: 0n }],
+    tags: ["Voice", "Utility"],
+    authors: [{ name: "t6rtar", id: 738215409559404562n }],
     managedStyle,
     settings,
 
