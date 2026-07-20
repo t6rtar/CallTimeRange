@@ -15,3 +15,7 @@ Instead of displaying only the call's starting timestamp, completed calls show a
 3. Enable **CallTimeRange** in Vencord's plugin settings.
 
 The plugin uses Discord's stored call start and end timestamps, so it does not need to track calls in the background.
+
+## Settings
+
+- **Hide calls under one minute:** Do not add a time range to calls shorter than 60 seconds.

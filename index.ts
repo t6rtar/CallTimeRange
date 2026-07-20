@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import definePlugin from "@utils/types";
+import { definePluginSettings } from "@api/Settings";
+import definePlugin, { OptionType } from "@utils/types";
 import { MessageStore } from "@webpack/common";
 
 import managedStyle from "./style.css?managed";
@@ -14,6 +15,15 @@ const RANGE_CLASS = "vc-call-time-range";
 
 let observer: MutationObserver | undefined;
 
+const settings = definePluginSettings({
+    hideShortCalls: {
+        type: OptionType.BOOLEAN,
+        description: "Hide the time range for calls shorter than one minute",
+        default: false,
+        onChange: refreshAllMessages
+    }
+});
+
 function formatTime(date: Date) {
     return new Intl.DateTimeFormat(undefined, {
         hour: "numeric",
@@ -22,7 +32,7 @@ function formatTime(date: Date) {
 }
 
 function addTimeRange(element: HTMLElement) {
-    if (element.querySelector(`.${RANGE_CLASS}`)) return;
+    const existingRange = element.querySelector(`.${RANGE_CLASS}`);
 
     const match = element.id.match(MESSAGE_ID_RE);
     if (!match) return;
@@ -36,11 +46,22 @@ function addTimeRange(element: HTMLElement) {
     const nativeTimestamp = element.querySelector("time");
     if (!startedAt || !nativeTimestamp?.parentElement) return;
 
+    if (settings.store.hideShortCalls && endedAt.getTime() - startedAt.getTime() < 60_000) {
+        existingRange?.remove();
+        return;
+    }
+
+    if (existingRange) return;
+
     const range = document.createElement("span");
     range.className = RANGE_CLASS;
     range.textContent = ` – ${formatTime(endedAt)}`;
     range.title = `Call ended at ${formatTime(endedAt)}`;
     nativeTimestamp.insertAdjacentElement("afterend", range);
+}
+
+function refreshAllMessages() {
+    document.querySelectorAll<HTMLElement>('[id^="chat-messages-"]').forEach(addTimeRange);
 }
 
 function processNode(node: Node) {
@@ -64,6 +85,7 @@ export default definePlugin({
     description: "Shows the start and end time on completed call messages",
     authors: [{ name: "t6rtar", id: 0n }],
     managedStyle,
+    settings,
 
     flux: {
         MESSAGE_UPDATE({ message }: { message: { channel_id?: string; channelId?: string; id: string; }; }) {
@@ -73,7 +95,7 @@ export default definePlugin({
     },
 
     start() {
-        document.querySelectorAll<HTMLElement>('[id^="chat-messages-"]').forEach(addTimeRange);
+        refreshAllMessages();
 
         observer = new MutationObserver(mutations => {
             for (const mutation of mutations) {
