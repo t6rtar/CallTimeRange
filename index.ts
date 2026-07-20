@@ -46,7 +46,7 @@ function addTimeRange(element: HTMLElement) {
     const nativeTimestamp = element.querySelector("time");
     if (!startedAt || !nativeTimestamp?.parentElement) return;
 
-    if (settings.store.hideShortCalls && endedAt.getTime() - startedAt.getTime() < 60_000) {
+    if (settings.store.hideShortCalls && Number(endedAt) - Number(startedAt) < 60_000) {
         existingRange?.remove();
         return;
     }
