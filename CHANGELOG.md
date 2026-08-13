@@ -2,7 +2,7 @@
 
 This file tracks user-facing changes.
 
-## Unreleased
+## 1.0.1 - 2026-08-12
 
 - Replaced the short-call setting with **Show exact seconds**.
 - Hid ranges for calls shorter than one minute by default.

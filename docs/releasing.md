@@ -8,10 +8,10 @@
 6. Create and push an annotated version tag.
 7. Create a GitHub release from the tag.
 
-## Release notes for 1.0.0
+## Release notes for 1.0.1
 
 ```md
-## CallTimeRange 1.0.0
+## CallTimeRange 1.0.1
 
 - Show start and end times on completed Discord call messages
 - Update the range when a call ends while the channel remains open
