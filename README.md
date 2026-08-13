@@ -1,32 +1,55 @@
 # CallTimeRange
 
-A Vencord userplugin that shows the start and end time of completed Discord calls.
+Show the start and end time on completed Discord call messages.
 
-Instead of displaying only the call's starting timestamp, completed calls show a compact range:
+CallTimeRange extends Discord's call timestamp with the stored end time, turning a single start time into a compact range.
 
-```text
-7:35 PM – 8:09 PM
-```
+![A completed Discord call showing its start and end time](docs/assets/call-time-range.png)
 
-## Installation
+## Features
 
-You need a [Vencord source installation](https://docs.vencord.dev/installing/) to use custom plugins.
+- Shows the start and end time after a call ends.
+- Updates the call message without a channel reload.
+- Uses Discord's stored timestamps instead of tracking calls in the background.
+- Can hide the range for calls shorter than one minute.
+- Uses your Discord locale and time format.
 
-From your Vencord folder, run:
+CallTimeRange displays hour and minute values. Discord may store seconds that the visible range does not show.
+
+## Install
+
+You need a [Vencord source installation](https://docs.vencord.dev/installing/) before installing custom plugins.
+
+From the root of your Vencord source folder:
 
 ```sh
-cd src/userplugins
-git clone https://github.com/t6rtar/CallTimeRange.git
-cd ../..
+git clone https://github.com/t6rtar/CallTimeRange.git src/userplugins/callTimeRange
 pnpm build
 ```
 
-Restart Discord or Vesktop, then enable **CallTimeRange** in Vencord's plugin settings.
+Install or select the custom build for your Discord client. Quit the client from its tray or taskbar icon, reopen it, then enable **CallTimeRange** under **Settings > Vencord > Plugins**.
 
-If you have not installed your source build yet, follow Vencord's [custom build installation steps](https://docs.vencord.dev/installing/#installing-your-custom-build).
+See [docs/installation.md](docs/installation.md) for update, removal, and troubleshooting steps.
 
-The plugin uses Discord's stored call start and end timestamps, so it does not need to track calls in the background.
+## Setting
 
-## Settings
+- **Hide calls under one minute:** Leave short completed calls unchanged.
 
-- **Hide calls under one minute:** Do not add a time range to calls shorter than 60 seconds.
+## Compatibility
+
+Discord and Vencord updates can break the plugin. Use the current source when testing a problem.
+
+## Development
+
+The plugin uses [index.ts](index.ts) and [style.css](style.css). Test changes from a Vencord source checkout with:
+
+```sh
+pnpm testTsc
+pnpm build
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a change.
+
+## License
+
+CallTimeRange is licensed under [GPL-3.0-or-later](LICENSE).

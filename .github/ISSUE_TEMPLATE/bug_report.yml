@@ -1,0 +1,61 @@
+name: Bug report
+description: Report a reproducible CallTimeRange problem
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Remove usernames, server names, and private messages from screenshots.
+  - type: input
+    id: client
+    attributes:
+      label: Client and version
+      placeholder: Vesktop 1.x.x
+    validations:
+      required: true
+  - type: input
+    id: vencord
+    attributes:
+      label: Vencord version or commit
+    validations:
+      required: true
+  - type: input
+    id: locale
+    attributes:
+      label: Locale and time format
+      placeholder: English (US), 12-hour time
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start a call...
+        2. End the call...
+        3. Check the call message...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks completed
+      options:
+        - label: I updated and rebuilt Vencord, quit my client, and reopened it.
+          required: true
+        - label: I removed private information from this report.
+          required: true
