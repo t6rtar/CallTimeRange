@@ -3,3 +3,7 @@
     font-size: inherit;
     font-weight: 400;
 }
+
+.vc-call-time-range-native-hidden {
+    display: none;
+}

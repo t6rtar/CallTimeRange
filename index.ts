@@ -9,30 +9,25 @@ import definePlugin, { OptionType } from "@utils/types";
 import { MessageStore } from "@webpack/common";
 
 import managedStyle from "./style.css?managed";
+import { formatCallRange, shouldShowCallRange } from "./timeFormatting";
 
 const MESSAGE_ID_RE = /^chat-messages-(\d+)-(\d+)$/;
 const RANGE_CLASS = "vc-call-time-range";
+const HIDDEN_NATIVE_TIMESTAMP_CLASS = "vc-call-time-range-native-hidden";
 
 let observer: MutationObserver | undefined;
 
 const settings = definePluginSettings({
-    hideShortCalls: {
+    showSeconds: {
         type: OptionType.BOOLEAN,
-        description: "Hide the time range for calls shorter than one minute",
+        description: "Show exact seconds and include calls shorter than one minute",
         default: false,
         onChange: refreshAllMessages
     }
 });
 
-function formatTime(date: Date) {
-    return new Intl.DateTimeFormat(undefined, {
-        hour: "numeric",
-        minute: "2-digit"
-    }).format(date);
-}
-
 function addTimeRange(element: HTMLElement) {
-    const existingRange = element.querySelector(`.${RANGE_CLASS}`);
+    const existingRange = element.querySelector<HTMLElement>(`.${RANGE_CLASS}`);
 
     const match = element.id.match(MESSAGE_ID_RE);
     if (!match) return;
@@ -46,18 +41,21 @@ function addTimeRange(element: HTMLElement) {
     const nativeTimestamp = element.querySelector("time");
     if (!startedAt || !nativeTimestamp?.parentElement) return;
 
-    if (settings.store.hideShortCalls && Number(endedAt) - Number(startedAt) < 60_000) {
+    if (!shouldShowCallRange(Number(endedAt) - Number(startedAt), settings.store.showSeconds)) {
         existingRange?.remove();
+        nativeTimestamp.classList.remove(HIDDEN_NATIVE_TIMESTAMP_CLASS);
         return;
     }
 
-    if (existingRange) return;
+    const formattedRange = formatCallRange(startedAt, endedAt, settings.store.showSeconds);
+    nativeTimestamp.classList.toggle(HIDDEN_NATIVE_TIMESTAMP_CLASS, formattedRange.hidesNativeTimestamp);
 
-    const range = document.createElement("span");
+    const range = existingRange ?? document.createElement("span");
     range.className = RANGE_CLASS;
-    range.textContent = ` – ${formatTime(endedAt)}`;
-    range.title = `Call ended at ${formatTime(endedAt)}`;
-    nativeTimestamp.insertAdjacentElement("afterend", range);
+    range.textContent = formattedRange.text;
+    range.title = `Call ran from ${formatCallRange(startedAt, endedAt, true).text}`;
+
+    if (!existingRange) nativeTimestamp.insertAdjacentElement("afterend", range);
 }
 
 function refreshAllMessages() {
@@ -110,5 +108,8 @@ export default definePlugin({
         observer?.disconnect();
         observer = undefined;
         document.querySelectorAll(`.${RANGE_CLASS}`).forEach(element => element.remove());
+        document.querySelectorAll(`.${HIDDEN_NATIVE_TIMESTAMP_CLASS}`).forEach(element => {
+            element.classList.remove(HIDDEN_NATIVE_TIMESTAMP_CLASS);
+        });
     }
 });

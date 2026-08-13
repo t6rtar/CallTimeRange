@@ -11,10 +11,11 @@ CallTimeRange extends Discord's call timestamp with the stored end time, turning
 - Shows the start and end time after a call ends.
 - Updates the call message without a channel reload.
 - Uses Discord's stored timestamps instead of tracking calls in the background.
-- Can hide the range for calls shorter than one minute.
+- Hides ranges for calls shorter than one minute by default.
+- Can show exact start and end seconds, including for short calls.
 - Uses your Discord locale and time format.
 
-CallTimeRange displays hour and minute values. Discord may store seconds that the visible range does not show.
+CallTimeRange displays hours and minutes by default. Enable **Show exact seconds** to display second-level start and end times and include calls shorter than one minute.
 
 ## Install
 
@@ -33,7 +34,7 @@ See [docs/installation.md](docs/installation.md) for update, removal, and troubl
 
 ## Setting
 
-- **Hide calls under one minute:** Leave short completed calls unchanged.
+- **Show exact seconds:** Display seconds on both endpoints and include calls shorter than one minute. Disabled by default.
 
 ## Compatibility
 

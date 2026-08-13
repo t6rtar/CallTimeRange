@@ -44,8 +44,8 @@ Confirm Discord marks the call as ended. If the call ended while the channel was
 
 ### The range looks short or long
 
-The visible range shows hour and minute values. Discord may store seconds that the plugin does not display, so the visible endpoints can look rounded.
+The default range shows hour and minute values, so its endpoints can look rounded. Enable **Show exact seconds** in the plugin settings to display second-level start and end times.
 
 ### Short calls show no range
 
-Open the plugin settings and check **Hide calls under one minute**. Turn it off if you want ranges on short calls.
+This is the default behavior. Enable **Show exact seconds** in the plugin settings to display second-level ranges for calls shorter than one minute.
